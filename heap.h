@@ -2,6 +2,7 @@
 #define HEAP_H
 #include <functional>
 #include <stdexcept>
+#include <vector>
 
 template <typename T, typename PComparator = std::less<T> >
 class Heap
@@ -146,28 +147,26 @@ void Heap<T,PComparator>::pop()
   while (true){
     
     // Calculate index of parent's first child
-    size_t index = parent * m_ary + 1;
+    size_t index = (parent * m_ary) + 1;
     priority = index;
 
     // Find child with highest priority, check if it is within bounds, then update
     for (size_t child = 1; child < m_ary; child++){
-      if (data.size() > index + child){
-        if (!comp(data[priority], data[index + child])){
+      size_t childIndex = index + child;
+      if (childIndex < data.size() && !comp(data[priority], data[index + child])){{
           priority = index + child;
         }
       }
     }
 
     // If neccessary, swap parent with highest priority
-    if (!comp(data[parent], data[priority])){
+    if (priority < data.size() && !comp(data[parent], data[priority])){
       std::swap(data[parent], data[priority]);
+      parent = priority; 
     }
     else{
       break;
     }
-
-    // Update parent index to continue reorganizing
-    parent = priority;  
 
   }
 
